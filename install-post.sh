@@ -50,11 +50,11 @@ if [ -z "$XS_APTIPV4" ] ; then
 fi
 # Update proxmox and install various system utils
 if [ -z "$XS_APTUPGRADE" ] ; then
-    XS_APTUPGRADE="yes"
+    XS_APTUPGRADE="no"
 fi
 # Customise bashrc
 if [ -z "$XS_BASHRC" ] ; then
-    XS_BASHRC="yes"
+    XS_BASHRC="no"
 fi
 # Add the latest ceph provided by proxmox
 if [ -z "$XS_CEPH" ] ; then
@@ -62,23 +62,23 @@ if [ -z "$XS_CEPH" ] ; then
 fi
 # Disable portmapper / rpcbind (security)
 if [ -z "$XS_DISABLERPC" ] ; then
-    XS_DISABLERPC="yes"
+    XS_DISABLERPC="no"
 fi
 # Ensure Entropy Pools are Populated, prevents slowdowns whilst waiting for entropy
 if [ -z "$XS_ENTROPY" ] ; then
-    XS_ENTROPY="yes"
+    XS_ENTROPY="no"
 fi
 # Protect the web interface with fail2ban
 if [ -z "$XS_FAIL2BAN" ] ; then
-    XS_FAIL2BAN="yes"
+    XS_FAIL2BAN="no"
 fi
 # Detect if is a virtual machine and install the relavant guest agent
 if [ -z "$XS_GUESTAGENT" ] ; then
-    XS_GUESTAGENT="yes"
+    XS_GUESTAGENT="no"
 fi
 # Install ifupdown2 for a virtual internal network allows rebootless networking changes (not compatible with openvswitch-switch)
 if [ -z "$XS_IFUPDOWN2" ] ; then
-    XS_IFUPDOWN2="yes"
+    XS_IFUPDOWN2="no"
 fi
 # Limit the size and optimise journald
 if [ -z "$XS_JOURNALD" ] ; then
@@ -86,7 +86,7 @@ if [ -z "$XS_JOURNALD" ] ; then
 fi
 # Install kernel source headers
 if [ -z "$XS_KERNELHEADERS" ] ; then
-    XS_KERNELHEADERS="yes"
+    XS_KERNELHEADERS="no"
 fi
 # Ensure ksmtuned (ksm-control-daemon) is enabled and optimise according to ram size
 if [ -z "$XS_KSMTUNED" ] ; then
@@ -110,7 +110,7 @@ if [ -z "$XS_LOGROTATE" ] ; then
 fi
 # Lynis security scan tool by Cisofy
 if [ -z "$XS_LYNIS" ] ; then
-    XS_LYNIS="yes"
+    XS_LYNIS="no"
 fi
 # Increase Max FS open files
 if [ -z "$XS_MAXFS" ] ; then
@@ -118,11 +118,11 @@ if [ -z "$XS_MAXFS" ] ; then
 fi
 # Optimise Memory
 if [ -z "$XS_MEMORYFIXES" ] ; then
-    XS_MEMORYFIXES="yes"
+    XS_MEMORYFIXES="no"
 fi
 # Pretty MOTD BANNER
 if [ -z "$XS_MOTD" ] ; then
-    XS_MOTD="yes"
+    XS_MOTD="no"
 fi
 # Enable Network optimising
 if [ -z "$XS_NET" ] ; then
@@ -146,7 +146,7 @@ if [ -z "$XS_OPENVSWITCH" ] ; then
 fi
 # Detect if this is an OVH server and install OVH Real Time Monitoring
 if [ -z "$XS_OVHRTM" ] ; then
-    XS_OVHRTM="yes"
+    XS_OVHRTM="no"
 fi
 # Set pigz to replace gzip, 2x faster gzip compression
 if [ -z "$XS_PIGZ" ] ; then
@@ -154,7 +154,7 @@ if [ -z "$XS_PIGZ" ] ; then
 fi
 # Bugfix: high swap usage with low memory usage
 if [ -z "$XS_SWAPPINESS" ] ; then
-    XS_SWAPPINESS="yes"
+    XS_SWAPPINESS="no"
 fi
 # Enable TCP BBR congestion control
 if [ -z "$XS_TCPBBR" ] ; then
@@ -174,15 +174,15 @@ if [ -z "$XS_TIMESYNC" ] ; then
 fi
 # Set Timezone, empty = set automatically by IP
 if [ -z "$XS_TIMEZONE" ] ; then
-    XS_TIMEZONE=""
+    XS_TIMEZONE="Asia/Jakarta"
 fi
 # Install common system utilities
 if [ -z "$XS_UTILS" ] ; then
-    XS_UTILS="yes"
+    XS_UTILS="no"
 fi
 # Increase vzdump backup speed
 if [ -z "$XS_VZDUMP" ] ; then
-    XS_VZDUMP="yes"
+    XS_VZDUMP="no"
 fi
 # Optimise ZFS arc size accoring to memory size
 if [ -z "$XS_ZFSARC" ] ; then
@@ -245,6 +245,10 @@ if [ "${XS_NOENTREPO,,}" == "yes" ] ; then
     if [ -f /etc/apt/sources.list.d/pve-enterprise.list ]; then
       sed -i "s/^deb/#deb/g" /etc/apt/sources.list.d/pve-enterprise.list
     fi
+    # disable enterprise proxmox ceph repo
+    if [ -f /etc/apt/sources.list.d/ceph.list ]; then
+      sed -i "s/^deb/#deb/g" /etc/apt/sources.list.d/ceph.list
+    fi
     # enable free public proxmox repo
     if [ ! -f /etc/apt/sources.list.d/proxmox.list ] && [ ! -f /etc/apt/sources.list.d/pve-public-repo.list ] && [ ! -f /etc/apt/sources.list.d/pve-install-repo.list ] ; then
       echo -e "deb http://download.proxmox.com/debian/pve ${OS_CODENAME} pve-no-subscription\\n" > /etc/apt/sources.list.d/pve-public-repo.list
@@ -257,10 +261,10 @@ fi
 
 # rebuild and add non-free to /etc/apt/sources.list
 cat <<EOF > /etc/apt/sources.list
-deb https://ftp.debian.org/debian ${OS_CODENAME} main contrib
-deb https://ftp.debian.org/debian ${OS_CODENAME}-updates main contrib
+deb https://mr.heru.id/debian ${OS_CODENAME} main contrib
+deb https://mr.heru.id/debian ${OS_CODENAME}-updates main contrib
 # non-free
-deb https://httpredir.debian.org/debian/ ${OS_CODENAME} main contrib non-free
+deb https://mr.heru.id/debian/ ${OS_CODENAME} main contrib non-free
 # security updates
 deb https://security.debian.org/debian-security ${OS_CODENAME}/updates main contrib
 EOF
