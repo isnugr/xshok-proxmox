@@ -263,10 +263,8 @@ fi
 cat <<EOF > /etc/apt/sources.list
 deb https://mr.heru.id/debian ${OS_CODENAME} main contrib
 deb https://mr.heru.id/debian ${OS_CODENAME}-updates main contrib
-# non-free
-deb https://mr.heru.id/debian/ ${OS_CODENAME} main contrib non-free
 # security updates
-deb https://security.debian.org/debian-security ${OS_CODENAME}/updates main contrib
+deb http://security.debian.org ${OS_CODENAME}-security main contrib
 EOF
 
 # Refresh the package lists
